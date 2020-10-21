@@ -24,16 +24,7 @@ console.log(x);
 
 let scores, roundScores, activePlayer;
 
-init(); //I need this call because i need to initialized variables values from the init function
-
-//or change CSS
-document.querySelector('.dice').style.display = 'none';
-
-//another type of selecting a specific element of HTML
-document.getElementById('score-0').textContent = '0';
-document.getElementById('score-1').textContent = '0';
-document.getElementById('current-0').textContent = '0';
-document.getElementById('current-1').textContent = '0';
+init(); //I need this call because i need to initialized var values from the init function
 
 //EVENT HANDLER - roll button
 
@@ -75,6 +66,7 @@ document.querySelector('.btn-hold').addEventListener('click', function () {
         document.querySelector('.dice').style.display = 'none';
         document.querySelector('.player-' + activePlayer + '-panel').classList.add('winner');
         document.querySelector('.player-' + activePlayer + '-panel').classList.remove('active');
+
     } else {
         //Next player
         nextPlayer();
@@ -114,13 +106,27 @@ function nextPlayer() {
 
 //EVENT HANDLER = New Game button
 
-document.querySelector('.btn-new').addEventListener('click', function () {
-    
-});
+document.querySelector('.btn-new').addEventListener('click', init); //init function without parenthesis because I don't want to call it immediately, i want to call it after some event (click in this example)
 
 function init() {
     scores = [0, 0];
     roundScore = 0;
     activePlayer = 0;
+
+    //changing CSS style
+    document.querySelector('.dice').style.display = 'none';
+
+    //another type of selecting a specific element of HTML
+    document.getElementById('score-0').textContent = '0';
+    document.getElementById('score-1').textContent = '0';
+    document.getElementById('current-0').textContent = '0';
+    document.getElementById('current-1').textContent = '0';
+    document.getElementById('name-0').textContent = 'Player 1';
+    document.getElementById('name-1').textContent = 'Player 2';
+    document.querySelector('.player-0-panel').classList.remove('winner');
+    document.querySelector('.player-1-panel').classList.remove('winner');
+    document.querySelector('.player-0-panel').classList.remove('active');
+    document.querySelector('.player-1-panel').classList.remove('active');
+    document.querySelector('.player-0-panel').classList.add('active');
 
 }
