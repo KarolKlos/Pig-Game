@@ -22,58 +22,61 @@ let x = document.querySelector('#score-0').textContent;
 console.log(x);
 */
 
-let scores, roundScores, activePlayer;
+let scores, roundScores, activePlayer, gamePlaying; //declaration of variables
 
 init(); //I need this call because i need to initialized var values from the init function
 
 //EVENT HANDLER - roll button
 
 document.querySelector('.btn-roll').addEventListener('click', function () {
+    if (gamePlaying) {
+        //1. Random number
+        let dice = Math.floor(Math.random() * 6) + 1;
 
-    //1. Random number
-    let dice = Math.floor(Math.random() * 6) + 1;
+        //2. Display the result
+        let diceDOM = document.querySelector('.dice');
+        diceDOM.style.display = 'block';
+        diceDOM.src = 'dice-' + dice + '.png';
 
-    //2. Display the result
-    let diceDOM = document.querySelector('.dice');
-    diceDOM.style.display = 'block';
-    diceDOM.src = 'dice-' + dice + '.png';
-
-    //3. Update the round score IF the rolled number was NOT a 1
-    if (dice !== 1) {
-        //Add core
-        roundScore += dice; //roundScore = roundScore + dice
-        document.querySelector('#current-' + activePlayer).textContent = roundScore;
-    } else {
-        //Next player
-        nextPlayer(); //calling a "nextPlayer" function because I need it right now
-    }
+        //3. Update the round score IF the rolled number was NOT a 1
+        if (dice !== 1) {
+            //Add core
+            roundScore += dice; //roundScore = roundScore + dice
+            document.querySelector('#current-' + activePlayer).textContent = roundScore;
+        } else {
+            //Next player
+            nextPlayer(); //calling a "nextPlayer" function because I need it right now
+        }
+    }//no "else" beacuse I dont want enything to happened if the game is not active
 
 });
 
 //EVENT HANDLER - hold button
 
 document.querySelector('.btn-hold').addEventListener('click', function () {
+    if (gamePlaying) {
+        //Add CURRENT score to global score
+        scores[activePlayer] += roundScore;
 
-    //Add CURRENT score to global score
-    scores[activePlayer] += roundScore;
+        //Update the UI
+        document.getElementById('score-' + activePlayer).textContent = scores[activePlayer];
 
-    //Update the UI
-    document.getElementById('score-' + activePlayer).textContent = scores[activePlayer];
+        //Check if the player won the game
+        if (scores[activePlayer] >= 20) {
+            document.querySelector('#name-' + activePlayer).textContent = 'Winner!';
+            document.querySelector('.dice').style.display = 'none';
+            document.querySelector('.player-' + activePlayer + '-panel').classList.add('winner');
+            document.querySelector('.player-' + activePlayer + '-panel').classList.remove('active');
+            gamePlaying = false;
 
-    //Check if the player won the game
-    if (scores[activePlayer] >= 20) {
-        document.querySelector('#name-' + activePlayer).textContent = 'Winner!';
-        document.querySelector('.dice').style.display = 'none';
-        document.querySelector('.player-' + activePlayer + '-panel').classList.add('winner');
-        document.querySelector('.player-' + activePlayer + '-panel').classList.remove('active');
+        } else {
+            //Next player
+            nextPlayer();
+        }
 
-    } else {
         //Next player
         nextPlayer();
-    }
-
-    //Next player
-    nextPlayer();
+    }//no "else" beacuse I dont want enything to happened if the game is not active
 
 });
 
@@ -109,9 +112,11 @@ function nextPlayer() {
 document.querySelector('.btn-new').addEventListener('click', init); //init function without parenthesis because I don't want to call it immediately, i want to call it after some event (click in this example)
 
 function init() {
+    //definition of variables
     scores = [0, 0];
     roundScore = 0;
     activePlayer = 0;
+    gamePlaying = true;
 
     //changing CSS style
     document.querySelector('.dice').style.display = 'none';
