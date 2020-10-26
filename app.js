@@ -22,7 +22,7 @@ let x = document.querySelector('#score-0').textContent;
 console.log(x);
 */
 
-let scores, roundScores, activePlayer, gamePlaying; //declaration of variables
+let scores, roundScores, activePlayer, gamePlaying, previousDice; //declaration of variables
 
 init(); //I need this call because i need to initialized var values from the init function
 
@@ -32,6 +32,8 @@ document.querySelector('.btn-roll').addEventListener('click', function () {
     if (gamePlaying) {
         //1. Random number
         let dice = Math.floor(Math.random() * 6) + 1;
+        previousDice.push(dice);
+        diceSummary = previousDice[previousDice.length - 1] + previousDice[previousDice.length - 2];
 
         //2. Display the result
         let diceDOM = document.querySelector('.dice');
@@ -44,8 +46,13 @@ document.querySelector('.btn-roll').addEventListener('click', function () {
             roundScore += dice; //roundScore = roundScore + dice
             document.querySelector('#current-' + activePlayer).textContent = roundScore;
         } else {
-            //Next player
             nextPlayer(); //calling a "nextPlayer" function because I need it right now
+        }
+
+        if (diceSummary === 12) {
+            //Next player after rolling 6two times in a row
+            document.querySelector('#score-' + activePlayer).textContent = 0;
+            nextPlayer();
         }
     }//no "else" beacuse I dont want enything to happened if the game is not active
 
@@ -61,8 +68,12 @@ document.querySelector('.btn-hold').addEventListener('click', function () {
         //Update the UI
         document.getElementById('score-' + activePlayer).textContent = scores[activePlayer];
 
+        //Change the finish score
+
+        let endScore = document.querySelector('.inpt').value;
+
         //Check if the player won the game
-        if (scores[activePlayer] >= 20) {
+        if (scores[activePlayer] >= endScore) {
             document.querySelector('#name-' + activePlayer).textContent = 'Winner!';
             document.querySelector('.dice').style.display = 'none';
             document.querySelector('.player-' + activePlayer + '-panel').classList.add('winner');
@@ -104,6 +115,8 @@ function nextPlayer() {
     document.querySelector('.player-1-panel').classList.toggle('active');
 
     document.querySelector('.dice').style.display = 'none';
+    
+    previousDice = [];
 
 }
 
@@ -117,6 +130,7 @@ function init() {
     roundScore = 0;
     activePlayer = 0;
     gamePlaying = true;
+    previousDice = [];
 
     //changing CSS style
     document.querySelector('.dice').style.display = 'none';
@@ -135,3 +149,9 @@ function init() {
     document.querySelector('.player-0-panel').classList.add('active');
 
 }
+
+/*
+1. A player looses his ENTIRE score when he rolls two 6 in a row. After that is the next player's turn. (Hint: Always save the previous dice roll in a separate variable)
+2. Add an input field to the HTML when players can set the winning score so that they can change the predefined score of 100. (Hint: you can read the value by the .value property in JS. This is an good oportunity to use google to figure this out)
+3. Add another dice to the game sa that there are two dices now. The player looses his current score when one of them is a 1. (Hint: you will need the CSS to position the second dice, so take a look at the CSS fo the first one)
+*/
