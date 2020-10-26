@@ -1,6 +1,8 @@
 # Pig-Game
 
+
 Game made with JavaScript based on DOM manipulation
+
 
 GAME RULES:
 
